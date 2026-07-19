@@ -1,0 +1,50 @@
+.education__list {
+  margin-left: 0.4rem;
+}
+
+.education__item {
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 2.5rem;
+  border-left: 2px solid var(--border);
+}
+
+.education__item:last-child {
+  padding-bottom: 0.25rem;
+}
+
+/* Timeline dot */
+.education__item::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 0.4rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.education__period {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+}
+
+.education__degree {
+  font-size: 1.15rem;
+}
+
+.education__school {
+  margin-top: 0.25rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.education__details {
+  margin-top: 0.6rem;
+  max-width: 65ch;
+  color: var(--text-muted);
+}

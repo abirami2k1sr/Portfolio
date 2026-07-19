@@ -1,0 +1,280 @@
+/*
+ * Stacked project cards (idea from context/References/cg-serious-business-
+ * sticky-cards, reworked): a pure-CSS position:sticky cascade. Each card
+ * sticks one header-band lower than the previous, so a covered project keeps
+ * its name + tech chips visible while the next card slides over its body.
+ * Later DOM siblings paint above earlier ones (all positioned) — no z-index.
+ *
+ * Base styles are the STATIC layout (plain stacked cards, used for reduced
+ * motion); the sticky cascade is layered on in the media query below.
+ */
+
+.projects__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.project-card--1 {
+  --card-bg: var(--project-card-1-bg);
+  --card-fg: var(--project-card-1-fg);
+}
+
+.project-card--2 {
+  --card-bg: var(--project-card-2-bg);
+  --card-fg: var(--project-card-2-fg);
+}
+
+.project-card--3 {
+  --card-bg: var(--project-card-3-bg);
+  --card-fg: var(--project-card-3-fg);
+}
+
+.project-card--4 {
+  --card-bg: var(--project-card-4-bg);
+  --card-fg: var(--project-card-4-fg);
+}
+
+.project-card__inner {
+  height: 100%;
+  padding: clamp(1.25rem, 2.2vw, 1.9rem) clamp(1.5rem, 3vw, 2.75rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  color: var(--card-fg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* --- Header: always-visible band when the card is covered ------------------ */
+
+.project-card__header {
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+}
+
+.project-card__title {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+}
+
+.project-card__number {
+  margin-right: 0.6rem;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+}
+
+.project-card__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.project-card__tech li {
+  padding: 0.08rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, currentColor 14%, transparent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* --- Body ------------------------------------------------------------------- */
+
+.project-card__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 4vw, 4rem);
+  padding-top: 1.25rem;
+}
+
+.project-card__content {
+  flex: 3;
+  min-width: 0;
+}
+
+.project-card__description {
+  max-width: 52ch;
+  font-size: 0.98rem;
+  opacity: 0.9;
+}
+
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.project-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.project-card__link:hover {
+  transform: translateY(-2px);
+}
+
+.project-card__link:focus-visible {
+  outline-color: currentColor;
+}
+
+/* GitHub: inverted card colors. Live site: outline on the card color. */
+.project-card__link--solid {
+  background: var(--card-fg);
+  color: var(--card-bg);
+}
+
+.project-card__link--solid:hover {
+  background: color-mix(in oklab, var(--card-fg) 88%, var(--card-bg));
+  color: var(--card-bg);
+}
+
+.project-card__link--ghost {
+  border: 1.5px solid color-mix(in oklab, currentColor 55%, transparent);
+  color: inherit;
+}
+
+.project-card__link--ghost:hover {
+  border-color: currentColor;
+  color: inherit;
+}
+
+.project-card__media {
+  flex: 2;
+  min-width: 0;
+  aspect-ratio: 16 / 10;
+  max-height: 100%;
+  border-radius: calc(var(--radius-lg) - 8px);
+  overflow: hidden;
+}
+
+.project-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Gradient stand-in until real screenshots exist. */
+.project-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--card-fg) 16%, transparent),
+    color-mix(in oklab, var(--card-fg) 4%, transparent)
+  );
+}
+
+.project-card__placeholder span {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  opacity: 0.35;
+}
+
+/* --- Sticky cascade (skipped under reduced motion) -------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Extra room below the last card: sticky cards are confined to the
+     container's CONTENT box, and each one is pushed out the moment the
+     container's bottom edge reaches its own margin box — so the room has to
+     be a separate flex item (not container padding, not a margin on the last
+     card). Keeps the full cascade readable for a stretch before it scrolls
+     away. */
+  .projects__cards::after {
+    content: '';
+    flex: none;
+    height: clamp(160px, 26svh, 320px);
+  }
+
+  .project-card {
+    position: sticky;
+    /* Sized so the 4th card still fits fully under the navbar + cascade. */
+    height: clamp(430px, calc(100svh - 18.25rem), 640px);
+  }
+
+  .project-card--1 {
+    top: calc(var(--nav-height) + 1.25rem);
+  }
+
+  .project-card--2 {
+    top: calc(var(--nav-height) + 5.25rem);
+  }
+
+  .project-card--3 {
+    top: calc(var(--nav-height) + 9.25rem);
+  }
+
+  .project-card--4 {
+    top: calc(var(--nav-height) + 13.25rem);
+  }
+}
+
+/* --- Mobile ------------------------------------------------------------------ */
+
+@media (max-width: 880px) {
+  .project-card__header {
+    padding-bottom: 0.7rem;
+  }
+
+  .project-card__title {
+    font-size: 1.15rem;
+  }
+
+  .project-card__tech li {
+    font-size: 0.7rem;
+  }
+
+  .project-card__body {
+    padding-top: 1rem;
+  }
+
+  /* Content only on small screens (like the reference). */
+  .project-card__media {
+    display: none;
+  }
+
+  .project-card__description {
+    font-size: 0.94rem;
+  }
+}
+
+@media (max-width: 880px) and (prefers-reduced-motion: no-preference) {
+  /* Title-only header bands. */
+  .project-card {
+    height: clamp(400px, calc(100svh - 16.25rem), 560px);
+  }
+
+  .project-card--1 {
+    top: calc(var(--nav-height) + 0.75rem);
+  }
+
+  .project-card--2 {
+    top: calc(var(--nav-height) + 4.25rem);
+  }
+
+  .project-card--3 {
+    top: calc(var(--nav-height) + 7.75rem);
+  }
+
+  .project-card--4 {
+    top: calc(var(--nav-height) + 11.25rem);
+  }
+}

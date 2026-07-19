@@ -1,0 +1,33 @@
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0;
+}
+
+.footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.footer__socials {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.footer__social-link {
+  display: inline-flex;
+  padding: 0.4rem;
+  color: var(--text-muted);
+}
+
+.footer__social-link:hover {
+  color: var(--primary);
+}
+
+.footer__copy {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

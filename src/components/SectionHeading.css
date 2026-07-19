@@ -1,0 +1,32 @@
+.section-heading {
+  margin-bottom: 2.75rem;
+}
+
+.section-heading__eyebrow {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.section-heading__title {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+}
+
+.section-heading__title::after {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  margin-top: 0.75rem;
+  border-radius: 2px;
+  background: var(--gradient-brand);
+}
+
+.section-heading__description {
+  margin-top: 1rem;
+  max-width: 60ch;
+  color: var(--text-muted);
+}

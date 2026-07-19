@@ -1,0 +1,41 @@
+.hobbies__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.hobby-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.hobby-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 1.4rem;
+}
+
+.hobby-card__title {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.hobby-card__description {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.hobby-card__link {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}

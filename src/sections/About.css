@@ -1,0 +1,261 @@
+/*
+ * Split-card About section.
+ *
+ * Base styles are the STATIC layout (stacked cards showing their skill backs,
+ * intro as a plain paragraph) — used on mobile and for reduced motion.
+ * The animated split-panel layout is layered on inside the
+ * (min-width: 1000px) and (prefers-reduced-motion: no-preference) query,
+ * which must stay in sync with the gsap.matchMedia condition in About.jsx.
+ */
+
+.about {
+  position: relative;
+  padding-block: clamp(4rem, 9vw, 6.5rem);
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
+}
+
+.about__header {
+  text-align: center;
+}
+
+.about__heading {
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+.about__intro-static {
+  max-width: 44rem;
+  margin: 0 auto 3rem;
+  padding-inline: 1.5rem;
+  text-align: center;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.about__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-inline: 1.5rem;
+}
+
+.about-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin-inline: auto;
+  border-radius: var(--radius-lg);
+}
+
+/* The split intro panel only exists in the animated layout. */
+.about-card__front {
+  display: none;
+}
+
+.about-card__back {
+  display: flex;
+  flex-direction: column;
+  border-radius: inherit;
+  padding: clamp(1.25rem, 1.8vw, 1.75rem);
+}
+
+.about-card:nth-child(1) .about-card__back {
+  background: var(--about-card-1-bg);
+  color: var(--about-card-1-fg);
+}
+
+.about-card:nth-child(2) .about-card__back {
+  background: var(--about-card-2-bg);
+  color: var(--about-card-2-fg);
+}
+
+.about-card:nth-child(3) .about-card__back {
+  background: var(--about-card-3-bg);
+  color: var(--about-card-3-fg);
+}
+
+.about-card__number {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+}
+
+.about-card__title {
+  font-size: clamp(1.4rem, 1.6vw, 1.7rem);
+  margin: 0.4rem 0 1.1rem;
+}
+
+.about-card__groups {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.about-card__group dt {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+}
+
+.about-card__group dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+/* Reduced motion on a wide screen: same static layout, cards in a row. */
+@media (min-width: 1000px) and (prefers-reduced-motion: reduce) {
+  .about__cards {
+    flex-direction: row;
+    align-items: stretch;
+    max-width: 1100px;
+    margin-inline: auto;
+  }
+
+  .about-card {
+    flex: 1;
+    max-width: none;
+    margin: 0;
+  }
+}
+
+/* Animated split-card layout. */
+@media (min-width: 1000px) and (prefers-reduced-motion: no-preference) {
+  .about {
+    height: 100svh;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .about__header {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+  }
+
+  .about__heading {
+    margin: 0;
+    transform: translateY(40px);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  .about__intro-static {
+    display: none;
+  }
+
+  .about__cards {
+    flex-direction: row;
+    width: 75%;
+    /* Keeps the dense card backs legible on small desktops — the scrubbed
+       width (75% → 60%) clamps against this instead of shrinking further. */
+    min-width: min(680px, 92vw);
+    max-width: 1150px;
+    gap: 0;
+    padding: 0;
+    perspective: 1000px;
+    transform: translateY(40px);
+    will-change: width;
+  }
+
+  .about-card {
+    flex: 1;
+    max-width: none;
+    margin: 0;
+    aspect-ratio: 5 / 7;
+    transform-style: preserve-3d;
+    transform-origin: top;
+    border-radius: 0;
+  }
+
+  .about-card:nth-child(1) {
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  }
+
+  .about-card:nth-child(3) {
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  }
+
+  .about-card__front,
+  .about-card__back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+
+  .about-card__front {
+    display: block;
+  }
+
+  .about-card__back {
+    transform: rotateY(180deg);
+    /* Safety valve: the denser backs may clip on short/narrow desktops. */
+    overflow-y: auto;
+    padding: clamp(1rem, 1.4vw, 1.5rem);
+  }
+
+  /* Compact type so all four groups fit the fixed 5/7 card face. */
+  .about-card__number {
+    font-size: 0.7rem;
+  }
+
+  .about-card__title {
+    font-size: clamp(1.2rem, 1.4vw, 1.5rem);
+    margin: 0.25rem 0 0.7rem;
+  }
+
+  .about-card__groups {
+    gap: 0.55rem;
+  }
+
+  .about-card__group dt {
+    font-size: 0.6rem;
+  }
+
+  .about-card__group dd {
+    margin-top: 0.1rem;
+    font-size: clamp(0.7rem, 0.75vw, 0.8rem);
+    line-height: 1.45;
+  }
+
+  /* One intro panel spanning all three cards — each front clips its third. */
+  .about-card__panel {
+    width: 300%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+      radial-gradient(circle at 12% 12%, var(--about-panel-glow), transparent 45%),
+      radial-gradient(circle at 88% 88%, var(--about-panel-glow), transparent 45%),
+      linear-gradient(140deg, var(--surface-2) 0%, var(--bg) 55%, var(--surface) 100%);
+  }
+
+  .about-card:nth-child(2) .about-card__panel {
+    margin-left: -100%;
+  }
+
+  .about-card:nth-child(3) .about-card__panel {
+    margin-left: -200%;
+  }
+
+  .about-card__intro {
+    max-width: 46rem;
+    padding: 2.5rem;
+    text-align: center;
+    font-size: clamp(0.95rem, 1.1vw, 1.25rem);
+    line-height: 1.75;
+    color: var(--text);
+  }
+}

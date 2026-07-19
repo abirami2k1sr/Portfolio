@@ -1,0 +1,318 @@
+/*
+ * Journey — education + work merged onto one scroll-drawn route.
+ * Adapted from context/codegrid-scroll-powered-svg-stroke: an SVG stroke is
+ * revealed via strokeDashoffset while ScrollTrigger scrubs through the map.
+ * Default (no JS / reduced motion) state: route fully drawn, rows visible.
+ */
+
+.journey {
+  position: relative;
+  /* The route swings wider than the container on small screens. */
+  overflow: hidden;
+}
+
+.journey__map {
+  position: relative;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+
+/* --- Route ---------------------------------------------------------- */
+
+.journey__route {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.journey__route svg {
+  width: 100%;
+  height: 100%;
+}
+
+.journey__route-track,
+.journey__route-progress {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Faint full-length track: the road ahead. */
+.journey__route-track {
+  stroke: var(--border);
+  stroke-width: 10px;
+  opacity: 0.55;
+}
+
+/* The traveled part, drawn in by scroll. */
+.journey__route-progress {
+  stroke: var(--primary);
+  stroke-width: 10px;
+  opacity: 0.75;
+}
+
+/* --- Milestone rows -------------------------------------------------- */
+
+.journey__rows {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4.5rem, 10vw, 8rem);
+}
+
+.journey__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+/* Cards alternate sides; the empty column is where the route swings. */
+.journey__row > .journey-card {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.journey__row--flip > .journey-card {
+  grid-column: 2;
+}
+
+.journey__row > .journey__photo {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.journey__row--flip > .journey__photo {
+  grid-column: 1;
+}
+
+/* --- Milestone card --------------------------------------------------- */
+
+.journey-card {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.journey-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.journey-card__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.journey-card__chip--education {
+  border-color: transparent;
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.journey-card__chip--work {
+  border-color: transparent;
+  background: color-mix(in oklab, var(--primary) 18%, transparent);
+  color: var(--primary-strong);
+}
+
+.journey-card__chip--now {
+  border-color: transparent;
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.journey-card__title {
+  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+}
+
+.journey-card__place {
+  margin-top: 0.35rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.journey-card__summary {
+  margin-top: 0.7rem;
+  font-size: 0.98rem;
+}
+
+/* --- Flip card (work milestones with highlights) ----------------------- */
+
+/*
+ * Both faces sit in the same grid cell, so the card's height is the taller
+ * face and never changes on flip — no ScrollTrigger.refresh() needed. The
+ * card chrome moves from .journey-card onto each face; the flippable card
+ * itself is just the 3D stage.
+ */
+
+.journey-card--flippable {
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  perspective: 1100px;
+}
+
+.journey-card__inner {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.35, 0, 0.25, 1);
+}
+
+.journey-card--flipped .journey-card__inner {
+  transform: rotateY(180deg);
+}
+
+.journey-card__face {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  backface-visibility: hidden;
+}
+
+.journey-card__face--back {
+  transform: rotateY(180deg);
+}
+
+.journey-card__face--front .journey-card__summary {
+  margin-bottom: 0.9rem;
+}
+
+.journey-card__back-label {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journey-card__highlights {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0.9rem;
+  padding-left: 1.2rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.journey-card__highlights li::marker {
+  color: var(--primary);
+}
+
+.journey-card__foot {
+  display: flex;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.journey-card__flip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.journey-card__flip-btn:hover {
+  color: var(--primary-strong);
+}
+
+.journey-card__flip-btn--back svg {
+  transform: scaleX(-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-card__inner {
+    transition: none;
+  }
+}
+
+/* --- Photos ------------------------------------------------------------ */
+
+.journey__photo {
+  width: 100%;
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 0.7rem 0.7rem 0.55rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  rotate: 1.5deg;
+}
+
+.journey__row--flip .journey__photo {
+  rotate: -1.5deg;
+}
+
+.journey__photo img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--radius-lg) - 8px);
+}
+
+.journey__photo figcaption {
+  padding-top: 0.55rem;
+  font-size: 0.82rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* --- Mobile ------------------------------------------------------------ */
+
+@media (max-width: 880px) {
+  .journey__rows {
+    gap: 3.5rem;
+  }
+
+  .journey__row,
+  .journey__row--flip {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .journey__row > .journey-card,
+  .journey__row--flip > .journey-card {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .journey__row > .journey__photo,
+  .journey__row--flip > .journey__photo {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Stretch the route wider than the viewport so the weave keeps its
+     shape on narrow screens (reference widened to 275%). */
+  .journey__route {
+    left: -60%;
+    width: 220%;
+  }
+}
