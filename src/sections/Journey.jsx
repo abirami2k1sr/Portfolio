@@ -157,8 +157,7 @@ export function Journey() {
         <SectionHeading
           eyebrow="The road so far"
           title="Journey"
-          description="Education and work on one map, latest first — scroll to trace the route from Bloomington back to Coimbatore."
-        />
+         />
       </div>
 
       <div className="journey__map container">

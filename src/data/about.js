@@ -3,15 +3,11 @@
 // skills; edit it to make it yours. Skill lists are curated (~4 per group) so
 // they fit the card backs — this section replaced the full Skills grid.
 
-export const aboutHeading = 'Design. Develop. Automate.'
+export const aboutHeading = 'Design. Build. Refine.'
 
 export const aboutIntro =
-  "Hi, I'm Abirami — a software engineer who also paints. I spent 2+ years at " +
-  'Mr. Cooper Group building loan-validation platforms: REST APIs, Kafka ' +
-  "pipelines, and React dashboards across .NET and AWS. These days I'm " +
-  'pursuing my MS in Computer Science at Indiana University Bloomington. I ' +
-  'like my backends resilient, my interfaces clean, and my weekends covered ' +
-  'in paint. Everything I make comes down to the same three moves.'
+  'Hi, hello! Im Abirami Saravanan. Im a curious person and an empathetic one, and Im at my happiest when those two meet: understanding what people actually need, then building it. I design and develop websites, apps, and systems that make technology feel handy instead of heavy. I did my masters in Computer Science at Indiana University Bloomington, where I focused on user experience and app development. '+
+  'Before that, I spent over two years at Mr. Cooper Group building loan-validation platforms. REST APIs, Kafka pipelines, React dashboards. Quiet systems that saved underwriters hours of their day.'
 
 export const pillars = [
   {
@@ -27,7 +23,7 @@ export const pillars = [
   {
     id: 'develop',
     number: '02',
-    title: 'Develop',
+    title: 'Build',
     groups: [
       { label: 'Languages', items: ['Python', 'Java', 'JavaScript', 'C#'] },
       { label: 'Frontend', items: ['React', 'Redux', 'Tailwind', 'Angular'] },
@@ -38,7 +34,7 @@ export const pillars = [
   {
     id: 'automate',
     number: '03',
-    title: 'Automate',
+    title: 'Refine',
     groups: [
       { label: 'AI-Assisted Dev', items: ['Claude Code', 'GitHub Copilot', 'Codex'] },
       { label: 'Workflows', items: ['UiPath', 'Power Automate', 'Kafka pipelines'] },

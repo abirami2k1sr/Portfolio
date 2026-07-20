@@ -67,7 +67,7 @@ export function Footer() {
           </li>
         </ul>
         <p className="footer__copy">
-          © {year} {profile.name} · Built with React + Vite
+          © {year} {profile.name} 
         </p>
       </div>
     </footer>

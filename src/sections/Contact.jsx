@@ -71,8 +71,6 @@ export function Contact() {
         <div className="contact__layout">
           <div className="contact__aside">
             <p>
-              I'm currently open to interesting projects and roles. The fastest way to reach me is
-              email — I usually reply within a day.
             </p>
             <a className="contact__email" href={`mailto:${profile.email}`}>
               {profile.email}
