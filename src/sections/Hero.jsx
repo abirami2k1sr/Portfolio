@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Flip, gsap, useGSAP } from '../lib/gsap.js'
 import { profile } from '../data/profile.js'
+import { asset } from '../lib/asset.js'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion.js'
 import { useTypingEffect } from '../hooks/useTypingEffect.js'
 import { ARRANGEMENTS, CLUTTER_ITEMS } from './heroClutter.js'
@@ -129,7 +130,7 @@ export function Hero() {
             className={`hero__item${item.ink ? ' hero__item--ink' : ''}`}
             data-item={item.id}
           >
-            <img src={item.src} alt="" />
+            <img src={asset(item.src)} alt="" />
           </div>
         ))}
 

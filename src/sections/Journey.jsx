@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { gsap, useGSAP } from '../lib/gsap.js'
 import { SectionHeading } from '../components/SectionHeading.jsx'
 import { journey } from '../data/journey.js'
+import { asset } from '../lib/asset.js'
 import './Journey.css'
 
 // The route both paths share, in SVG user units. The viewBox stretches to the
@@ -179,7 +180,7 @@ export function Journey() {
               {stop.photo && (
                 <figure className="journey__photo">
                   <img
-                    src={stop.photo.src}
+                    src={asset(stop.photo.src)}
                     alt={stop.photo.alt}
                     loading="lazy"
                     decoding="async"
