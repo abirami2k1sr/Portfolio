@@ -81,6 +81,41 @@ Key mechanics:
 
 ---
 
+## Sub-feature: Scalloped navbar edge (2026-07-26, `feature/earthy-palette`)
+
+The navbar's bottom edge is a scalloped trim: `.navbar::after` strip (`height: --scallop-r` = 13px) below the bar, painted with a repeating radial tile (`--scallop-tile` = 2r) — each bump **filled with `--bg`** up to `r − 2px`, then a `--brand` orange rim arc to `r`, transparent beyond. The fill matters: the earlier hollow-arc version let page content show through inside the bumps while scrolling. Bar body (`::before`, plain `--bg`) + filled bumps read as one opaque shape; the rim is the only visible edge. Mobile drawer opens at `--nav-h + --scallop-r`, below the trim.
+
+- ⚠️ Puppeteer: `screenshot({ clip })` coordinates are **document**-based and `captureBeyondViewport` (default true) re-renders from the page top — a scrolled sticky navbar lands outside a `y: 0` clip and looks "disappeared" while `getBoundingClientRect` says it's fine. Viewport-truth screenshots = `captureBeyondViewport: false`, no clip.
+
+**Verified** (2026-07-26): lint + build clean; puppeteer real-scroll — thin at top / thick after scroll, bumps opaque over hero content, mobile 390 drawer + zero horizontal overflow, zero console errors.
+
+---
+
+## Sub-feature: Pinned Projects heading (2026-07-26, `feature/earthy-palette`)
+
+User: on scroll the first project card is stable (sticky) but the **section heading should also stay fixed**. Made the `SectionHeading` container (`.projects__intro`, new class on the wrapping `.container` in `Projects.jsx`) `position: sticky` so "Projects" stays pinned while the cards cascade under it.
+
+- Geometry lives in scoped vars on `.projects`: `--projects-heading-top` (nav + 1.25rem — where the heading pins) and `--projects-cascade-top` (nav + 7.5rem — where card 1 pins, ~1.25rem below the pinned heading). The old card cascade tops (nav + 1.25/5.25/9.25/13.25rem) were pushed down to start at `--projects-cascade-top`, stepping `--projects-cascade-step` (4rem). Card height shrank `100svh − 18.25rem` → `100svh − 24.5rem` (min 400) so the 4th card still lands fully on screen under nav + heading + cascade.
+- Sticky heading is **desktop only** (`@media (min-width: 881px)`, complementing the `max-width: 880px` mobile card block): on short phones a pinned heading + 4 header bands + full 4th card overruns the viewport, so mobile keeps its original tuning and the heading scrolls away. Reduced motion = static (no sticky), as before.
+- Cards never rise above their own sticky `top`, so they can't cover the pinned heading during the cascade (verified ~19px gap desktop). At section **exit** the stack scrolls up behind the heading — handled by `z-index: 1` + `background: var(--bg)` on `.projects__intro` (the only reason it needs a bg; the section is plain `--bg`), so the heading paints cleanly over the departing cards. Hit-test confirms the heading title stays topmost throughout.
+- ⚠️ Scallop clearance fix (2026-07-26): `--projects-heading-top` was `nav + 1.25rem`, which tucked the pinned heading behind the navbar — the bar **thickens to 4.8rem on scroll** (`Navbar.jsx` `THICK_REM`; `--nav-height` is only the 3.4→4.8 base) and the scalloped `.navbar::after` adds 13px below it (~90px visual bottom). Bumped to `nav + 2.75rem` (108px) for an 18px gap under the trim. The eyebrow-less "Projects" heading is only ~57px tall, so `--projects-cascade-top` (nav + 7.5rem = 184px) still clears it by 19px — cascade tops + card height stayed at their original verified values.
+- **Early release (2026-07-26, user request "quit before the last card scroll")**: the heading now slides up and out as the **last** card reaches its pinned spot, instead of staying pinned through the dwell + exit. This is the one thing pure CSS can't do here — a `position: sticky` element only releases at the bottom of its containing block, which the heading shares with the cards (they need the trailing `::after` dwell room), so it would otherwise linger until the section exits. Added `useHeadingRelease` in `Projects.jsx`: a rAF-throttled scroll listener (same pattern as the navbar's thickness listener — **vanilla JS, still no GSAP**) that writes `--projects-intro-shift` to `.projects__intro`, `translateY(0)` while pinned then `-(scrollY − releaseAt)` past the release point. `releaseAt = flowTop(lastCard) − lastCard.stickyTop − (headingPinTop + headingHeight)`, i.e. the heading finishes clearing exactly as the last card pins. `flowTop` sums `offsetTop`/`offsetParent` (scroll- and sticky-independent). Gated to the same `(min-width: 881px) and no-preference` query (removes the shift otherwise); re-measures on resize and matchMedia change. ⚠️ Projects is **no longer strictly pure-CSS** — this is the first JS in the section; the card cascade itself is still all CSS.
+
+**Verified** (2026-07-26, re-checked after the scallop fix + early release): lint + build clean; puppeteer real-scroll at 1440/1280/1366 — nav thick (4.8rem) when pinned, heading [108,165] with an 18px gap below the scallop, card1 tucks 19px below, cascade tops [184,248,312,376], 4th card fully visible (14–16px bottom margin at 800–900px tall), no overlap (heading title hit-tests to itself); **`--projects-intro-shift` holds 0 through cards 1–3 then ramps monotonically (0 → −26 → −132 → −238…) so the heading is fully above the nav exactly as card 4 pins at 376**; mobile heading scrolls away with card cascade unchanged; zero console errors.
+
+---
+
+## Sub-feature: Social icons at Contact heading level (2026-07-26, `feature/earthy-palette`)
+
+User: put the GitHub, LinkedIn and mail icons on the same level as the Contact header. Wrapped `Contact.jsx`'s `SectionHeading` + a new `.contact__socials` `<ul>` in a `.contact__header` flex row (`justify-content: space-between; align-items: center`); the row owns the heading's bottom spacing (`.contact__header .section-heading { margin-bottom: 0 }`) so the icons center on the title. Icons are circular bordered pill links (muted → `--primary` on hover), built from `profile.socials` (GitHub, LinkedIn) + a `mailto` for email — same icon SVGs as the footer, colocated in `Contact.jsx` per the existing per-file icon pattern (cf. `Projects.jsx`).
+
+- **Additive, not a move**: the footer still renders its own socials — the two aren't adjacent (contact header is at the top of the last section, footer at page bottom, form between them). Offered to drop the footer set if the user wants a single location.
+- Mobile: the `.contact__header` row wraps (`flex-wrap`), so on narrow screens the icons drop just below the heading, left-aligned above the email/form — no room to keep them inline with the title.
+
+**Verified** (2026-07-26): lint + build clean; puppeteer real-scroll at 1440/1024/390 — icons sit at the "Contact" title level right-aligned on desktop/tablet (socials-vs-title center delta 6px), wrap cleanly below the heading on mobile; zero console errors.
+
+---
+
 ## Previous features (implemented, unmerged)
 
 ### Hero Typing Roles + Intro Cleanup

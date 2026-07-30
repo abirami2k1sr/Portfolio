@@ -17,7 +17,7 @@ export const pillars = [
     groups: [
       { label: 'Visual Art', items: ['Sketching', 'Painting', 'Digital illustration'] },
       { label: 'Interfaces', items: ['Layout', 'Typography', 'Color systems'] },
-      { label: 'This Site', items: ['Ocean-teal theme', 'Clutter hero', 'Journey map'] },
+      { label: 'This Site', items: ['Earthy theme', 'Clutter hero', 'Journey map'] },
     ],
   },
   {

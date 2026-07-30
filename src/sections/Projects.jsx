@@ -1,6 +1,74 @@
+import { useEffect, useRef } from 'react'
 import { SectionHeading } from '../components/SectionHeading.jsx'
 import { projects } from '../data/projects.js'
 import './Projects.css'
+
+// Document-relative top using layout offsets — unaffected by scroll or by the
+// cards' sticky rendering (offsetTop reports the in-flow position).
+function flowTop(el) {
+  let y = 0
+  while (el) {
+    y += el.offsetTop
+    el = el.offsetParent
+  }
+  return y
+}
+
+// Releases the pinned "Projects" heading before the last card takes over: it
+// pins via CSS, then this slides it up and out (a translate written to a CSS
+// var, rAF-throttled like the navbar) once scroll passes the point where the
+// last card reaches its sticky spot. Only runs where the heading actually pins
+// (desktop, motion allowed); otherwise the shift stays cleared.
+function useHeadingRelease(introRef, lastCardRef) {
+  useEffect(() => {
+    const intro = introRef.current
+    const lastCard = lastCardRef.current
+    if (!intro || !lastCard) return
+
+    const active = window.matchMedia('(min-width: 881px) and (prefers-reduced-motion: no-preference)')
+    let frame = 0
+    let releaseAt = 0
+
+    const measure = () => {
+      const styles = getComputedStyle(intro)
+      // Fully clear the heading (pin offset + its own height) right as the last
+      // card pins, so it's gone by the time that card is the focus.
+      const travel = (parseFloat(styles.top) || 0) + intro.offsetHeight
+      const cardStickyTop = parseFloat(getComputedStyle(lastCard).top) || 0
+      releaseAt = flowTop(lastCard) - cardStickyTop - travel
+    }
+
+    const apply = () => {
+      frame = 0
+      if (!active.matches) {
+        intro.style.removeProperty('--projects-intro-shift')
+        return
+      }
+      const over = window.scrollY - releaseAt
+      intro.style.setProperty('--projects-intro-shift', over > 0 ? `${-over}px` : '0px')
+    }
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(apply)
+    }
+    const onResize = () => {
+      measure()
+      apply()
+    }
+
+    measure()
+    apply()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
+    active.addEventListener('change', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+      active.removeEventListener('change', onResize)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [introRef, lastCardRef])
+}
 
 function GitHubIcon() {
   return (
@@ -19,11 +87,15 @@ function ExternalIcon() {
 }
 
 export function Projects() {
+  const introRef = useRef(null)
+  const lastCardRef = useRef(null)
+  const lastIndex = projects.length - 1
+  useHeadingRelease(introRef, lastCardRef)
+
   return (
     <section id="projects" className="section projects">
-      <div className="container">
+      <div className="container projects__intro" ref={introRef}>
         <SectionHeading
-          eyebrow="Work"
           title="Projects"
           />
       </div>
@@ -34,6 +106,7 @@ export function Projects() {
         {projects.map((project, index) => (
           <article
             key={project.id}
+            ref={index === lastIndex ? lastCardRef : undefined}
             className={`project-card project-card--${index + 1}`}
             aria-labelledby={`project-title-${project.id}`}
           >
