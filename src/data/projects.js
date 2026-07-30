@@ -21,7 +21,7 @@ export const projects = [
     id: 'portfolio',
     title: 'Personal Portfolio',
     description:
-      'This site — an ocean-teal design system with dark/light themes and GSAP scroll choreography: the clutter hero, split About cards, a drawn journey route, and these stacking cards.',
+      'This site — an earthy terracotta design system with GSAP scroll choreography: the clutter hero, split About cards, a drawn journey route, and these stacking cards.',
     tech: ['React', 'Vite', 'GSAP', 'CSS variables'],
     githubUrl: 'https://github.com/abirami2k1',
     liveUrl: '',

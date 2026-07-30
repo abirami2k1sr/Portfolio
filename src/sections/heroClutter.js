@@ -4,8 +4,8 @@
 // Sources: context/Homepage Photos, preprocessed to transparent PNGs
 // (see current-feature.md). DOM order = paint order: kolam sits right after
 // notebook so it reads as stuck on the notebook page; photo stays topmost.
-// `ink: true` items are white line art that inverts to black on light theme
-// (kolam is teal ink instead — white would vanish on the notebook page).
+// `ink: true` items are white line art on the dark background
+// (kolam is dark ink instead — white would vanish on the notebook page).
 // Arrangement entries may override `size` (notebook grows in notebook mode).
 
 export const CLUTTER_ITEMS = [

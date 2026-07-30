@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { profile } from '../data/profile.js'
-import { ThemeToggle } from './ThemeToggle.jsx'
 import './Navbar.css'
 
 const SECTION_LINKS = [
@@ -27,16 +26,46 @@ function CloseIcon() {
   )
 }
 
+// Navbar grows from THIN to THICK over the first SCROLL_RANGE pixels of scroll.
+const THIN_REM = 3.4
+const THICK_REM = 4.8
+const SCROLL_RANGE = 200
+
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname, hash } = useLocation()
   const onHome = pathname === '/'
   const [firstName] = profile.name.split(' ')
+  const headerRef = useRef(null)
 
   // Close the drawer after any navigation.
   useEffect(() => {
     setMenuOpen(false)
   }, [pathname, hash])
+
+  // Thicken the bar as the page scrolls. Write the CSS var straight to the
+  // element (via ref) so scrolling never triggers a React re-render.
+  useEffect(() => {
+    const header = headerRef.current
+    if (!header) return
+    let frame = 0
+    const apply = () => {
+      frame = 0
+      const progress = Math.min(window.scrollY / SCROLL_RANGE, 1)
+      const height = THIN_REM + (THICK_REM - THIN_REM) * progress
+      header.style.setProperty('--nav-h', `${height}rem`)
+      header.style.setProperty('--nav-progress', progress.toFixed(3))
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(apply)
+    }
+    apply()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [])
 
   // Close the drawer on Escape.
   useEffect(() => {
@@ -51,7 +80,7 @@ export function Navbar() {
   const closeMenu = () => setMenuOpen(false)
 
   return (
-    <header className="navbar">
+    <header className="navbar" ref={headerRef}>
       <div className="navbar__inner container">
         <Link to="/" className="navbar__brand" onClick={closeMenu}>
           {firstName}
@@ -77,7 +106,6 @@ export function Navbar() {
         </nav>
 
         <div className="navbar__actions">
-          <ThemeToggle />
           <button
             type="button"
             className="navbar__menu-button"

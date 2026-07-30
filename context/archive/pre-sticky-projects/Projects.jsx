@@ -9,8 +9,7 @@ export function Projects() {
         <SectionHeading
           eyebrow="Work"
           title="Projects"
-          description="A selection of things I've built — from this portfolio itself to app experiments."
-        />
+         />
         <ul className="projects__grid">
           {projects.map((project) => (
             <li key={project.id} className="project-card">

@@ -47,7 +47,7 @@
 
 /* The traveled part, drawn in by scroll. */
 .journey__route-progress {
-  stroke: var(--primary);
+  stroke: var(--brand);
   stroke-width: 10px;
   opacity: 0.75;
 }
@@ -93,7 +93,7 @@
 .journey-card {
   padding: clamp(1.25rem, 3vw, 1.75rem);
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--brand);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
 }
@@ -182,7 +182,7 @@
   flex-direction: column;
   padding: clamp(1.25rem, 3vw, 1.75rem);
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--brand);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   backface-visibility: hidden;

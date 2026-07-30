@@ -1,91 +1,67 @@
 /*
- * Ocean teal-blue palette — every color used in the app is defined here.
- * Themes switch via the data-theme attribute on <html>.
+ * Earthy palette — every color used in the app is defined here.
+ * Single dark theme (data-theme="dark" is set statically on <html>).
+ *
+ * Reference anchors: Cream #f7efda · Autumn #b26b3c · Copper #6d3f1e · Espresso #29241a.
+ * Espresso → background, Cream → text, Copper → cards, Autumn → the terracotta
+ * accent. Autumn is a mid-tone (fails AA for normal-size text either way), so
+ * links/buttons use a lightened Autumn (#d1935f) and a few stepped browns are
+ * derived between Espresso and Copper for surfaces — all cleared for WCAG AA.
  */
 
 :root,
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #0a1a24;
-  --surface: #12232e;
-  --surface-2: #17303d;
-  --primary: #14b8a6;
-  --primary-strong: #2dd4bf;
-  --on-primary: #04201c;
-  --accent: #22d3ee;
-  --text: #e6f1f5;
-  --text-muted: #7a94a3;
-  --border: #1e3a4a;
+  --bg: #29241a;
+  --surface: #37301f;
+  --surface-2: #483925;
+  --primary: #d1935f;
+  --primary-strong: #dea975;
+  --on-primary: #29241a;
+  --accent: #e0a877;
+  --brand: #e0701f;
+  --name: #fef4d8;
+  --text: #f7efda;
+  --text-muted: #cdb99e;
+  --border: #9a6a3f;
 
   --danger: #f87171;
 
-  --nav-bg: rgba(10, 26, 36, 0.82);
-  --shadow-card: 0 10px 28px rgba(2, 10, 15, 0.4);
-  --hero-veil: rgba(10, 26, 36, 0.55);
+  --nav-bg: rgba(41, 36, 26, 0.82);
+  --shadow-card: 0 10px 28px rgba(12, 9, 4, 0.45);
+  --hero-veil: rgba(41, 36, 26, 0.55);
 
-  --about-panel-glow: rgba(20, 184, 166, 0.14);
+  --about-panel-glow: rgba(224, 112, 31, 0.16);
   --about-card-1-bg: var(--surface-2);
   --about-card-1-fg: var(--text);
   --about-card-2-bg: var(--primary);
   --about-card-2-fg: var(--on-primary);
-  --about-card-3-bg: #1e3a4a;
+  --about-card-3-bg: #6d3f1e;
   --about-card-3-fg: var(--text);
 
   --project-card-1-bg: var(--surface-2);
   --project-card-1-fg: var(--text);
   --project-card-2-bg: var(--primary);
   --project-card-2-fg: var(--on-primary);
-  --project-card-3-bg: #1e3a4a;
+  --project-card-3-bg: #6d3f1e;
   --project-card-3-fg: var(--text);
   --project-card-4-bg: var(--accent);
-  --project-card-4-fg: #04201c;
+  --project-card-4-fg: #29241a;
 
   --gradient-brand: linear-gradient(120deg, var(--primary) 0%, var(--accent) 100%);
 }
 
-[data-theme='light'] {
-  color-scheme: light;
-
-  --bg: #ededed;
-  --surface: #e6f1f5;
-  --surface-2: #d8e8ee;
-  --primary: #0f766e;
-  --primary-strong: #115e59;
-  --on-primary: #f5fbfd;
-  --accent: #0891b2;
-  --text: #0a1a24;
-  --text-muted: #4a6572;
-  --border: #cbdde3;
-
-  --danger: #b91c1c;
-
-  --nav-bg: rgba(245, 251, 253, 0.85);
-  --shadow-card: 0 10px 28px rgba(10, 26, 36, 0.1);
-  --hero-veil: rgba(245, 251, 253, 0.55);
-
-  --about-panel-glow: rgba(15, 118, 110, 0.12);
-  /* Cards 1–2 inherit the dark theme's var-based values; card 3 goes deep navy
-     for contrast against the light page. */
-  --about-card-3-bg: #0a1a24;
-  --about-card-3-fg: #e6f1f5;
-
-  /* Project cards 1–2 inherit the var-based values; 3 goes deep navy, 4 keeps
-     the accent bg but needs a light-theme foreground. */
-  --project-card-3-bg: #0a1a24;
-  --project-card-3-fg: #e6f1f5;
-  --project-card-4-fg: #f5fbfd;
-}
-
 /* Hero notebook mode (desktop): the header text sits on the white notebook
-   page, so it renders as black ink in BOTH themes (greeting, gradient name,
-   typed role, and caret all derive from these vars).
+   page, so it renders as dark espresso ink (greeting, gradient name, typed role,
+   and caret all derive from these vars).
    Below 1000px the notebook isn't behind the text — keep normal colors. */
 @media (min-width: 1000px) {
   .hero--notebook .hero__header {
-    --primary: #0a1a24;
-    --accent: #0a1a24;
-    --text: #0a1a24;
+    --primary: #29241a;
+    --accent: #29241a;
+    --name: #29241a;
+    --text: #29241a;
     /* Redeclare so the gradient picks up the scoped vars — the :root
        declaration resolves var(--primary) at :root, not here. */
     --gradient-brand: linear-gradient(120deg, var(--primary) 0%, var(--accent) 100%);

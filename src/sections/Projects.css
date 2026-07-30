@@ -9,6 +9,20 @@
  * motion); the sticky cascade is layered on in the media query below.
  */
 
+.projects {
+  /* Sticky-cascade geometry (desktop). The "Projects" heading pins at
+     --projects-heading-top; the card cascade starts below it at
+     --projects-cascade-top so cards tuck under the heading, never over it.
+     The heading offset clears the *scrolled* navbar: it thickens to 4.8rem
+     (Navbar THICK_REM) and the scalloped trim adds ~13px below that, so a bare
+     nav-height offset would tuck the heading behind the scallop. 2.75rem leaves
+     an ~18px gap under the trim; the cascade top already sits well below the
+     (eyebrow-less) heading, so it stays put. */
+  --projects-heading-top: calc(var(--nav-height) + 2.75rem);
+  --projects-cascade-top: calc(var(--nav-height) + 7.5rem);
+  --projects-cascade-step: 4rem;
+}
+
 .projects__cards {
   display: flex;
   flex-direction: column;
@@ -206,24 +220,45 @@
 
   .project-card {
     position: sticky;
-    /* Sized so the 4th card still fits fully under the navbar + cascade. */
-    height: clamp(430px, calc(100svh - 18.25rem), 640px);
+    /* Sized so the 4th card still fits fully under the navbar + pinned
+       heading + cascade. */
+    height: clamp(410px, calc(100svh - 24.5rem), 600px);
   }
 
   .project-card--1 {
-    top: calc(var(--nav-height) + 1.25rem);
+    top: var(--projects-cascade-top);
   }
 
   .project-card--2 {
-    top: calc(var(--nav-height) + 5.25rem);
+    top: calc(var(--projects-cascade-top) + var(--projects-cascade-step));
   }
 
   .project-card--3 {
-    top: calc(var(--nav-height) + 9.25rem);
+    top: calc(var(--projects-cascade-top) + var(--projects-cascade-step) * 2);
   }
 
   .project-card--4 {
-    top: calc(var(--nav-height) + 13.25rem);
+    top: calc(var(--projects-cascade-top) + var(--projects-cascade-step) * 3);
+  }
+}
+
+/* The section heading pins alongside the cascade so "Projects" stays visible
+   while the cards scroll under it. Desktop only — on mobile the heading scrolls
+   away so the cascade keeps its full vertical budget on short screens. */
+@media (min-width: 881px) and (prefers-reduced-motion: no-preference) {
+  .projects__intro {
+    position: sticky;
+    top: var(--projects-heading-top);
+    z-index: 1;
+    /* Matches the section background: reads as clean empty space and insures
+       the heading against any sub-pixel overlap from the cards below. */
+    background: var(--bg);
+    /* Scroll-driven release: the heading pins normally (shift 0), then Projects.jsx
+       slides it up and out as the last card reaches its pinned spot, so it quits
+       before the final card takes the stage. Pure sticky can't do this — the
+       heading shares its containing block with the cards, which need the trailing
+       dwell room, so it would otherwise stay pinned until the section exits. */
+    transform: translateY(var(--projects-intro-shift, 0px));
   }
 }
 

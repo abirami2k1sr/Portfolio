@@ -1,3 +1,41 @@
+/* Heading on the left, social links on the right — same level as the title. */
+.contact__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.75rem;
+}
+
+/* The row owns the bottom spacing so the icons center on the heading cleanly. */
+.contact__header .section-heading {
+  margin-bottom: 0;
+}
+
+.contact__socials {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.contact__social-link {
+  display: inline-flex;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.contact__social-link:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
 .contact__layout {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -5,14 +43,14 @@
   align-items: start;
 }
 
-.contact__aside p {
+.contact__aside-lead {
   color: var(--text-muted);
-  max-width: 45ch;
+  max-width: 34ch;
 }
 
 .contact__email {
   display: inline-block;
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   font-size: 1.05rem;
   font-weight: 600;
 }

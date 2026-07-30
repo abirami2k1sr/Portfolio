@@ -26,14 +26,9 @@
   object-fit: contain;
 }
 
-/* Ink doodles ship as white line art; flip to black on the light theme */
-[data-theme='light'] .hero__item--ink img {
-  filter: invert(1);
-}
-
 /* Notebook mode pushes the kolam off the page onto the desk, where its dark
-   ink vanishes against the dark theme — force it to white there. */
-[data-theme='dark'] .hero--notebook .hero__item[data-item='kolam'] img {
+   ink vanishes against the dark background — force it to white there. */
+.hero--notebook .hero__item[data-item='kolam'] img {
   filter: brightness(0) invert(1);
 }
 
@@ -59,10 +54,7 @@
 
 .hero__name {
   font-size: clamp(2.2rem, 5vw, 3.2rem);
-  background: var(--gradient-brand);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  color: var(--name);
 }
 
 .hero__role {
