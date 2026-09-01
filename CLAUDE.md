@@ -14,7 +14,7 @@ Read the following to get the full context of the project:
 
 ## Commands
 
-- **Dev server**: `npm run dev` (runs on http://localhost:5173)
+- **Dev server**: `npm run dev` (runs on )http://localhost:5173
 - **Build**: `npm run build`
 - **Preview production build**: `npm run preview`
 - **Lint**: `npm run lint`

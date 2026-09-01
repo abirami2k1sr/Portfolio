@@ -1,14 +1,52 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { profile } from '../data/profile.js'
+import { asset } from '../lib/asset.js'
+import { pinnedScrollTop } from '../lib/aboutAnchors.js'
 import './Navbar.css'
 
 const SECTION_LINKS = [
+  // About and Skills are two points of the same pinned section — the intro
+  // copy and the flipped card backs. See lib/aboutAnchors.js.
   { label: 'About', hash: '#about' },
+  { label: 'Skills', hash: '#skills' },
   { label: 'Projects', hash: '#projects' },
   { label: 'Journey', hash: '#journey' },
-  { label: 'Contact', hash: '#contact' },
 ]
+
+// Reaching out is a direct action now that Contact is off the section list, so
+// these are links out rather than another anchor. Icons colocated per the
+// per-file pattern (cf. Footer.jsx, Projects.jsx).
+const CONTACT_LINKS = [
+  {
+    label: 'LinkedIn',
+    href: profile.socials.find((social) => social.label === 'LinkedIn').url,
+    external: true,
+  },
+  { label: 'Email', href: `mailto:${profile.email}`, external: false },
+]
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+      <path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5 2.5 2.5 0 0 1 .02-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.31-.03-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21h-4V9Z" />
+    </svg>
+  )
+}
+
+function MailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="m22 7-10 6L2 7" />
+    </svg>
+  )
+}
+
+const CONTACT_ICONS = {
+  LinkedIn: LinkedInIcon,
+  Email: MailIcon,
+}
 
 function MenuIcon() {
   return (
@@ -35,7 +73,6 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname, hash } = useLocation()
   const onHome = pathname === '/'
-  const [firstName] = profile.name.split(' ')
   const headerRef = useRef(null)
 
   // Close the drawer after any navigation.
@@ -79,12 +116,29 @@ export function Navbar() {
 
   const closeMenu = () => setMenuOpen(false)
 
+  // #about and #skills both point inside the pinned About section, where a
+  // plain anchor jump lands on the section's flow position instead of the
+  // scrub point that actually shows the copy / the flipped card backs.
+  const handleSectionClick = (event, targetHash) => {
+    closeMenu()
+    const top = pinnedScrollTop(targetHash)
+    if (top === null) return
+    event.preventDefault()
+    window.scrollTo({ top, behavior: 'smooth' })
+    window.history.replaceState(null, '', targetHash)
+  }
+
   return (
     <header className="navbar" ref={headerRef}>
       <div className="navbar__inner container">
         <Link to="/" className="navbar__brand" onClick={closeMenu}>
-          {firstName}
-          <span className="navbar__brand-mark">.</span>
+          <img
+            className="navbar__brand-mark"
+            src={asset('logo/abi-mark.png')}
+            alt={profile.name}
+            width="147"
+            height="132"
+          />
         </Link>
 
         <nav className="navbar__nav" aria-label="Primary">
@@ -92,7 +146,11 @@ export function Navbar() {
             {SECTION_LINKS.map((link) =>
               <li key={link.hash}>
                 {onHome ? (
-                  <a className="navbar__link" href={link.hash} onClick={closeMenu}>
+                  <a
+                    className="navbar__link"
+                    href={link.hash}
+                    onClick={(event) => handleSectionClick(event, link.hash)}
+                  >
                     {link.label}
                   </a>
                 ) : (
@@ -106,6 +164,26 @@ export function Navbar() {
         </nav>
 
         <div className="navbar__actions">
+          <ul className="navbar__contact" aria-label="Get in touch">
+            {CONTACT_LINKS.map(({ label, href, external }) => {
+              const Icon = CONTACT_ICONS[label]
+              return (
+                <li key={label}>
+                  <a
+                    className="navbar__contact-link"
+                    href={href}
+                    aria-label={label}
+                    title={label}
+                    onClick={closeMenu}
+                    {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                  >
+                    <Icon />
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+
           <button
             type="button"
             className="navbar__menu-button"

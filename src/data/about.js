@@ -1,29 +1,46 @@
-// Content sourced from context/resume.md (Develop / Automate pillars).
-// ✏️ The Design pillar is placeholder content — no résumé source for art-side
-// skills; edit it to make it yours. Skill lists are curated (~4 per group) so
-// they fit the card backs — this section replaced the full Skills grid.
+// Content sourced from context/resume.md (Build / Refine pillars); the Design
+// pillar is the user's own copy. Skill lists are curated so they fit the card
+// backs, which are `overflow: hidden` in the animated layout — check for
+// clipping before adding items. This section replaced the full Skills grid.
 
 export const aboutHeading = 'Design. Build. Refine.'
 
-export const aboutIntro =
-  'Hi, hello! Im Abirami Saravanan. Im a curious person and an empathetic one, and Im at my happiest when those two meet: understanding what people actually need, then building it. I design and develop websites, apps, and systems that make technology feel handy instead of heavy. I did my masters in Computer Science at Indiana University Bloomington, where I focused on user experience and app development. '+
-  'Before that, I spent over two years at Mr. Cooper Group building loan-validation platforms. REST APIs, Kafka pipelines, React dashboards. Quiet systems that saved underwriters hours of their day.'
+// The About copy is the user's own words — keep the voice as written.
+// Rendered as a lead line plus body paragraphs, both in the static layout and
+// on the split-card panel.
+export const aboutLead = 'Hi, hello. I’m Abirami Saravanan.'
+
+export const aboutParagraphs = [
+  'I’m an empathetic, creative, and curious person. I love connecting with people and knowing their story. I question a lot, and learning to ask questions properly has shaped my path, both personally and professionally.',
+  'I design and build websites, apps, and systems, usually starting from one simple question: what is the purpose, and how can it be met for both the user and the business? The intent matters, and it should come through in the work. I want to make systems that are handy for everyone to use.',
+  'I recently graduated with my master’s in Computer Science from Indiana University Bloomington, focused on user experience and app development. Before that I spent over two years at Mr. Cooper Group building loan-validation platforms.',
+  'Apart from work, I’m in my creative art flow. I believe in the blend of structure and flow.',
+]
 
 export const pillars = [
   {
     id: 'design',
-    number: '01',
     title: 'Design',
+    tagline: 'Where it starts. Always on paper first.',
     groups: [
-      { label: 'Visual Art', items: ['Sketching', 'Painting', 'Digital illustration'] },
-      { label: 'Interfaces', items: ['Layout', 'Typography', 'Color systems'] },
-      { label: 'This Site', items: ['Earthy theme', 'Clutter hero', 'Journey map'] },
+      {
+        label: 'UX & product',
+        items: ['Figma', 'User research', 'Wireframing', 'Prototyping', 'Usability testing'],
+      },
+      {
+        label: 'Interfaces',
+        items: ['Layout', 'Typography', 'Color schema', 'HTML', 'CSS', 'Tailwind'],
+      },
+      {
+        label: 'Visual art',
+        items: ['Sketching', 'Painting', 'Digital illustration'],
+      },
     ],
   },
   {
     id: 'develop',
-    number: '02',
     title: 'Build',
+    tagline: 'Where ideas become real.',
     groups: [
       { label: 'Languages', items: ['Python', 'Java', 'JavaScript', 'C#'] },
       { label: 'Frontend', items: ['React', 'Redux', 'Tailwind', 'Angular'] },
@@ -33,8 +50,8 @@ export const pillars = [
   },
   {
     id: 'automate',
-    number: '03',
     title: 'Refine',
+    tagline: 'Where good becomes reliable.',
     groups: [
       { label: 'AI-Assisted Dev', items: ['Claude Code', 'GitHub Copilot', 'Codex'] },
       { label: 'Workflows', items: ['UiPath', 'Power Automate', 'Kafka pipelines'] },

@@ -1,11 +1,27 @@
 import { useRef } from 'react'
 import { gsap, useGSAP, ScrollTrigger } from '../lib/gsap.js'
-import { aboutHeading, aboutIntro, pillars } from '../data/about.js'
+import { aboutHeading, aboutLead, aboutParagraphs, pillars } from '../data/about.js'
+import { ABOUT_PIN_ID, pinnedScrollTop } from '../lib/aboutAnchors.js'
 import './About.css'
 
 // How many viewport-heights of scroll the section stays pinned for.
 // (Reference used 4 — shortened so the hero → About transition feels quicker.)
 const PIN_DISTANCE = 2.5
+
+// Same copy renders twice: once as the static intro, once on the panel that
+// the three card fronts each clip a third of.
+function AboutCopy() {
+  return (
+    <>
+      <p className="about-copy__lead">{aboutLead}</p>
+      {aboutParagraphs.map((paragraph) => (
+        <p key={paragraph} className="about-copy__text">
+          {paragraph}
+        </p>
+      ))}
+    </>
+  )
+}
 
 export function About() {
   const sectionRef = useRef(null)
@@ -38,7 +54,8 @@ export function About() {
         const FLIP_STAGGER = 0.055
         const TILT = [-15, 0, 15]
 
-        ScrollTrigger.create({
+        const pin = ScrollTrigger.create({
+          id: ABOUT_PIN_ID,
           trigger: section,
           start: 'top top',
           end: () => `+=${window.innerHeight * PIN_DISTANCE}`,
@@ -97,6 +114,15 @@ export function About() {
           },
         })
 
+        // Opened directly on #about / #skills: the browser has already
+        // jumped to the section's flow position, so correct it to the scrub
+        // point that hash means once the trigger's geometry is known.
+        const deepLink = window.location.hash
+        if (pinnedScrollTop(deepLink) !== null) {
+          pin.refresh()
+          window.scrollTo({ top: pinnedScrollTop(deepLink), behavior: 'instant' })
+        }
+
         // Everything above writes inline styles via gsap.set — clear them
         // when the breakpoint stops matching so the static layout is clean.
         return () => {
@@ -114,21 +140,25 @@ export function About() {
       </div>
 
       {/* Shown instead of the split panel on mobile / reduced motion. */}
-      <p className="about__intro-static">{aboutIntro}</p>
+      <div className="about__intro-static">
+        <AboutCopy />
+      </div>
 
-      <div className="about__cards">
+      <div id="skills" className="about__cards">
         {pillars.map((pillar, index) => (
           <article key={pillar.id} className="about-card">
             {/* Each front shows one third of the same full-width intro panel. */}
             <div className="about-card__front" aria-hidden={index > 0 || undefined}>
               <div className="about-card__panel">
-                <p className="about-card__intro">{aboutIntro}</p>
+                <div className="about-card__intro">
+                  <AboutCopy />
+                </div>
               </div>
             </div>
 
             <div className="about-card__back">
-              <span className="about-card__number">( {pillar.number} )</span>
               <h3 className="about-card__title">{pillar.title}</h3>
+              {pillar.tagline && <p className="about-card__tagline">{pillar.tagline}</p>}
               <dl className="about-card__groups">
                 {pillar.groups.map((group) => (
                   <div key={group.label} className="about-card__group">

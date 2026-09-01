@@ -34,11 +34,29 @@
   color: var(--text-muted);
 }
 
+/* Shared copy blocks — used by the static intro and the split-card panel. */
+.about-copy__lead {
+  margin: 0 0 0.9em;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.about-copy__text {
+  margin: 0 0 0.85em;
+}
+
+.about-copy__text:last-child {
+  margin-bottom: 0;
+}
+
 .about__cards {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding-inline: 1.5rem;
+  /* #skills anchors here — clear the sticky navbar on the static layout. */
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
 }
 
 .about-card {
@@ -76,15 +94,18 @@
   color: var(--about-card-3-fg);
 }
 
-.about-card__number {
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  opacity: 0.55;
-}
-
 .about-card__title {
   font-size: clamp(1.4rem, 1.6vw, 1.7rem);
-  margin: 0.4rem 0 1.1rem;
+  margin: 0 0 0.9rem;
+}
+
+/* Only the Design pillar carries one today; the others fall back to the
+   title's own bottom margin. */
+.about-card__tagline {
+  margin: -0.55rem 0 1rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  opacity: 0.75;
 }
 
 .about-card__groups {
@@ -206,17 +227,19 @@
   }
 
   /* Compact type so all four groups fit the fixed 5/7 card face. */
-  .about-card__number {
-    font-size: 0.7rem;
-  }
-
   .about-card__title {
     font-size: clamp(1.2rem, 1.4vw, 1.5rem);
-    margin: 0.25rem 0 0.7rem;
+    margin: 0 0 0.45rem;
+  }
+
+  .about-card__tagline {
+    margin: -0.3rem 0 0.5rem;
+    font-size: 0.7rem;
+    line-height: 1.4;
   }
 
   .about-card__groups {
-    gap: 0.55rem;
+    gap: 0.45rem;
   }
 
   .about-card__group dt {
@@ -250,12 +273,24 @@
     margin-left: -200%;
   }
 
+  /* The card face shrinks as the panel narrows (5/7 of a third of 60% width),
+     so the copy is tuned to fit the shortest face — down to ~300px at 1000px
+     wide — rather than the roomy pre-split panel. The floor is what governs
+     ≤1280px, where the face is tightest; only the vw term is free to grow. */
   .about-card__intro {
-    max-width: 46rem;
-    padding: 2.5rem;
+    max-width: 58rem;
+    padding: clamp(0.85rem, 1.6vw, 2rem);
     text-align: center;
-    font-size: clamp(0.95rem, 1.1vw, 1.25rem);
-    line-height: 1.75;
+    font-size: clamp(0.76rem, 1vw, 1.1rem);
+    line-height: 1.55;
     color: var(--text);
+  }
+
+  .about-card__intro .about-copy__lead {
+    margin-bottom: 0.6em;
+  }
+
+  .about-card__intro .about-copy__text {
+    margin-bottom: 0.5em;
   }
 }
