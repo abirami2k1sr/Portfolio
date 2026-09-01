@@ -1,0 +1,35 @@
+/* Full-screen intro over the landing page. Sits above the navbar (z-index 50)
+   so nothing pokes through, and unmounts as soon as the fade finishes. */
+.intro-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  /* The video blends against this element's own background, so the group has
+     to composite as a unit — opacity below already isolates it, but say so. */
+  isolation: isolate;
+  opacity: 1;
+  transition: opacity 350ms ease;
+}
+
+.intro-reveal.is-fading {
+  opacity: 0;
+  /* Hand the page back the moment the fade starts. */
+  pointer-events: none;
+}
+
+/* The clip is cream ink on pure black — `screen` drops the black into the
+   espresso ground, leaving the strokes floating on the page. */
+.intro-reveal__video {
+  width: min(38vh, 56vw, 320px);
+  height: auto;
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-reveal {
+    display: none;
+  }
+}

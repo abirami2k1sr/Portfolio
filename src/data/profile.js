@@ -7,9 +7,9 @@ export const profile = {
   roles: ['Software Engineer', 'Designer', 'Observer', 'Artist'],
   location: 'Bloomington, IN',
   // No longer rendered in the hero (removed on request); kept as source content.
-  tagline: 'I build reliable full-stack systems — resilient backends and clean React interfaces.',
+  tagline: 'I build reliable full-stack systems: resilient backends and clean React interfaces.',
   summary:
-    'Software engineer with 2+ years at Mr. Cooper Group building loan-validation platforms — REST APIs, Kafka pipelines, and React dashboards across .NET and AWS. Currently pursuing an MS in Computer Science at Indiana University.',
+    'Software engineer with 2+ years at Mr. Cooper Group building loan-validation platforms: REST APIs, Kafka pipelines, and React dashboards across .NET and AWS. Graduated with master\'s degree in Computer Science at Indiana University.',
   email: 'abirami2k1sr@gmail.com',
   // From the résumé; not rendered by default (public site). Add to Contact if you want it shown.
   phone: '+1 (930) 333-5113',

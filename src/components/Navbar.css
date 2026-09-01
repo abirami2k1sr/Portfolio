@@ -54,18 +54,28 @@
   height: var(--nav-h);
 }
 
+/* The signature mark is the wordmark — it scales with the bar as it thickens,
+   between the thin and thick heights, and never taller than half the bar. */
 .navbar__brand {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.navbar__brand:hover {
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  flex: none;
 }
 
 .navbar__brand-mark {
-  color: var(--primary);
+  width: auto;
+  height: clamp(1.6rem, calc(var(--nav-h) * 0.52), 2.4rem);
+  transition: opacity var(--transition-fast);
+}
+
+.navbar__brand:hover .navbar__brand-mark {
+  opacity: 0.75;
+}
+
+/* Brand sits at the far left, the links at the far right — the actions box
+   is empty on desktop, so space-between alone would centre the links. */
+.navbar__nav {
+  margin-left: auto;
 }
 
 .navbar__links {
@@ -84,10 +94,39 @@
   color: var(--text);
 }
 
+/* The right-hand control cluster: the contact links at every width, plus the
+   drawer button once the section links collapse. Being the last flex item, it
+   is what sits flush to the container's right edge. */
 .navbar__actions {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+.navbar__contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Matches the drawer button's footprint so the cluster reads as one row. */
+.navbar__contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.navbar__contact-link:hover {
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 .navbar__menu-button {
