@@ -146,7 +146,7 @@
   outline-color: currentColor;
 }
 
-/* GitHub: inverted card colors. Live site: outline on the card color. */
+/* GitHub button: inverted card colors. */
 .project-card__link--solid {
   background: var(--card-fg);
   color: var(--card-bg);
@@ -155,16 +155,6 @@
 .project-card__link--solid:hover {
   background: color-mix(in oklab, var(--card-fg) 88%, var(--card-bg));
   color: var(--card-bg);
-}
-
-.project-card__link--ghost {
-  border: 1.5px solid color-mix(in oklab, currentColor 55%, transparent);
-  color: inherit;
-}
-
-.project-card__link--ghost:hover {
-  border-color: currentColor;
-  color: inherit;
 }
 
 .project-card__media {

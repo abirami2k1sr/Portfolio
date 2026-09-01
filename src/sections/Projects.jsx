@@ -78,14 +78,6 @@ function GitHubIcon() {
   )
 }
 
-function ExternalIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M7 17 17 7M8 7h9v9" />
-    </svg>
-  )
-}
-
 export function Projects() {
   const introRef = useRef(null)
   const lastCardRef = useRef(null)
@@ -139,18 +131,6 @@ export function Projects() {
                       >
                         <GitHubIcon />
                         GitHub
-                      </a>
-                    )}
-                    {project.liveUrl && (
-                      <a
-                        className="project-card__link project-card__link--ghost"
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`${project.title} live site`}
-                      >
-                        <ExternalIcon />
-                        Live site
                       </a>
                     )}
                   </div>

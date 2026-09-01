@@ -8,8 +8,7 @@
 // --project-card-N theme vars, and re-tuning the card height so the last card
 // still lands fully on screen.
 //
-// Every card renders a GitHub button from `githubUrl`. `liveUrl` is optional:
-// the "Live site" button only appears when a project is actually hosted.
+// Every card renders a single GitHub button from `githubUrl`.
 
 export const projects = [
   {
@@ -19,7 +18,6 @@ export const projects = [
       'A fertility-tracking platform: daily BBT and cervical-mucus logging, a Node/Express engine that detects thermal shifts and Peak Day, and cycle-aware AI guidance.',
     tech: ['React', 'Tailwind', 'Node.js', 'Express', 'PostgreSQL', 'AWS'],
     githubUrl: 'https://github.com/abirami2k1',
-    liveUrl: '',
   },
   {
     id: 'patient-observations',
@@ -28,7 +26,6 @@ export const projects = [
       'A Spring Boot + SQLite clinical-record system where staff log quantitative measurements and qualitative observations against patients, run diagnostic rules over them, and keep a full command and audit trail. A strict four-layer architecture with Strategy, Observer, Factory, and Command patterns lets new rule algorithms plug in without touching existing code.',
     tech: ['Spring Boot', 'SQLite', 'Docker', 'GitHub Actions', 'Render'],
     githubUrl: 'https://github.com/abirami2k1/Patient-Observations-Tracker',
-    liveUrl: '',
   },
   {
     id: 'portfolio',
@@ -37,7 +34,6 @@ export const projects = [
       'This site: an earthy terracotta design system with GSAP scroll choreography: the clutter hero, split About cards, a drawn journey route, and these stacking cards.',
     tech: ['React', 'Vite', 'GSAP', 'CSS variables'],
     githubUrl: 'https://github.com/abirami2k1',
-    liveUrl: '',
   },
   {
     id: 'project-four',
@@ -46,6 +42,5 @@ export const projects = [
       '✏️ Placeholder: swap in a real project. Keep descriptions to two or three lines so the card stays balanced against the media pane.',
     tech: ['Tech 1', 'Tech 2'],
     githubUrl: 'https://github.com/abirami2k1',
-    liveUrl: '',
   },
 ]

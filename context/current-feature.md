@@ -566,6 +566,52 @@ overflow; zero console errors.
 
 ---
 
+## Sub-feature: Live site button removed (2026-09-01, `feature/logo-brand`)
+
+User: "remove live button in the project". No project had a `liveUrl` set after
+`project-three` was retired, so the button was already never rendering; this
+removes the machinery so it cannot come back by accident.
+
+- `Projects.jsx`: the `{project.liveUrl && …}` anchor, and `ExternalIcon`, which
+  had no other caller.
+- `Projects.css`: `.project-card__link--ghost` and its `:hover`, which existed
+  only for that button. `--solid` stays (the GitHub button still uses it).
+- `projects.js`: `liveUrl` dropped from all four entries and from the header
+  comment.
+
+⚠️ **Restoring a live link later means re-adding all three pieces**, not just a
+data field.
+
+### ⚠️ An edit script silently ate two entries
+
+The scripted edit to `projects.js` left the file with **2 of 4 projects** and a
+malformed array tail, despite the two `str.replace` calls being incapable of
+that on their face (`liveUrl` lines and a comment). Lint and build **both passed
+on the broken file** — a 2-element array is still valid JS — and the stale dev
+server kept serving 3 cards, so nothing failed loudly. It was caught only
+because the DOM probe printed 3 rows where 4 were expected.
+
+Recovered with `git show HEAD:src/data/projects.js > src/data/projects.js`, then
+the edit was re-applied with an **assertion that the entry count is unchanged
+(4 → 4)** before writing, plus an immediate re-read from disk. Cause was not
+pinned down; an IDE buffer race is the likeliest candidate (files were open in
+the editor, and the same class of overwrite hit `about.js` on 2026-08-31 — see
+[[verify-copy-against-live-dom]]).
+
+**Lesson: a passing lint + build does not mean the data survived. Assert the
+element count before writing, and confirm against the live DOM.**
+
+**Verified** (2026-09-01): lint + build clean; disk re-read shows 4 entries
+(`knowher`, `patient-observations`, `portfolio`, `project-four`), no `liveUrl`,
+balanced braces/brackets; puppeteer real-scroll at 1440×900 and 390×844 on a
+freshly restarted dev server — 4 cards, exactly 1 link each, all labelled
+"GitHub", zero `.project-card__link--ghost` elements, no "Live site" string in
+body text, zero horizontal overflow, zero console errors. (Only the topmost
+card's button hit-tests to itself; covered cards show a header band only, which
+is the designed cascade behaviour.)
+
+---
+
 ## Previous features (implemented, unmerged)
 
 ### Hero Typing Roles + Intro Cleanup
