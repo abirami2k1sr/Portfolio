@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { SectionHeading } from '../components/SectionHeading.jsx'
 import { projects } from '../data/projects.js'
+import { asset } from '../lib/asset.js'
 import './Projects.css'
 
 // Document-relative top using layout offsets — unaffected by scroll or by the
@@ -138,7 +139,7 @@ export function Projects() {
 
                 <div className="project-card__media" aria-hidden="true">
                   {project.image ? (
-                    <img src={project.image} alt="" loading="lazy" decoding="async" />
+                    <img src={asset(project.image)} alt="" loading="lazy" decoding="async" />
                   ) : (
                     <div className="project-card__placeholder">
                       <span>0{index + 1}</span>

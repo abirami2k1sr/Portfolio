@@ -48,7 +48,7 @@ Final design:
 - ⚠️ From the abandoned GSAP version, still worth knowing: ScrollTrigger pins wrap elements in `.pin-spacer` divs, so `:nth-of-type` card selectors silently break under pinning — use explicit modifier classes.
 - Old grid Projects archived to `context/archive/pre-sticky-projects/`.
 
-**Verified** (2026-07-16): cascade tops exactly [84, 148, 212, 276] desktop / [76, 152, 228, 304] mobile through the dwell; covered headers hit-test to themselves, bodies to the covering card; GitHub button hittable on the top card; natural release; no 390px overflow; reduced motion static; both themes; zero console errors. Mobile: header band fits title + one chip row (~4 chips; extras wrap under the next card).
+**Verified** (2026-07-16): cascade tops exactly [84, 148, 212, 276] desktop / [76, 132, 188, 244] mobile through the dwell (⚠️ the mobile figures were later re-measured on 2026-09-02: the step is 3.5rem = 56px, not 4.75rem; this line originally recorded 76px steps); covered headers hit-test to themselves, bodies to the covering card; GitHub button hittable on the top card; natural release; no 390px overflow; reduced motion static; both themes; zero console errors. Mobile: header band fits title + one chip row (~4 chips; extras wrap under the next card).
 
 ---
 
@@ -609,6 +609,191 @@ freshly restarted dev server — 4 cards, exactly 1 link each, all labelled
 body text, zero horizontal overflow, zero console errors. (Only the topmost
 card's button hit-tests to itself; covered cards show a header band only, which
 is the designed cascade behaviour.)
+
+---
+
+## Sub-feature: Lighter card 2 + placeholder removed (2026-09-01, `feature/logo-brand`)
+
+User: "make the project 2 card background lighter and remove 4th card placeholder".
+
+- `--project-card-2-bg`: `var(--primary)` (#d1935f) → **#e9c39d**, a light tint of
+  Autumn toward Cream, so the run reads dark / light / dark instead of
+  dark / mid / dark. `--project-card-2-fg` was `var(--on-primary)`, which is
+  #29241a; now stated explicitly, since "on-primary" no longer describes a card
+  that isn't `--primary`. Contrast **5.92:1 → 9.37:1**.
+  Chips, the hairline rule and the GitHub button all derive from `--card-fg`
+  via `color-mix`, so they followed automatically.
+- `project-four` removed from `projects.js`. Three cards now: knowHer,
+  Patient Observation Tracker, Personal Portfolio.
+
+### What did NOT need changing
+
+- **Heading release**: `useHeadingRelease` takes `lastCardRef`, bound by
+  `index === projects.length - 1`, and reads the card's sticky `top` off
+  `getComputedStyle`. It re-derives from the DOM, so dropping a card needed no
+  JS edit. Confirmed live: the shift stays 0px through cards 1–2 and ramps to
+  clear exactly as card 3 pins.
+- **Card height**: the `clamp()` was tuned so the *4th* card lands fully on
+  screen. With three, the last card pins higher (312 vs 376), so it has strictly
+  more room, not less. Measured 80px of clearance below it.
+
+### ⚠️ Slot 4's styles were kept on purpose
+
+`.project-card--4` and `--project-card-4-bg/-fg` are now unused. They are
+**deliberately retained** so adding a fourth project is a data-only change: drop
+them and a future 4th card renders with no background and no sticky offset,
+which is the exact silent failure the file header warns about. Header comment
+updated `EXACTLY FOUR ENTRIES` → `AT MOST FOUR ENTRIES`.
+
+### The entry-count assertion earned its keep
+
+The guard added after the 2026-09-01 truncation incident fired immediately —
+it asserted 3 entries when the file had 4 (three real *plus* the placeholder),
+catching my own miscount before any write. Cheap, and it failed loudly where
+lint and build would not have.
+
+**Verified** (2026-09-01): lint + build clean; disk re-read shows exactly
+`['knowher', 'patient-observations', 'portfolio']`, balanced braces/brackets;
+puppeteer real-scroll at 1440×900 — 3 cards, computed backgrounds
+rgb(72,57,37) / rgb(233,195,157) / rgb(109,63,30), all three fg/bg pairs at
+**9.70 / 9.37 / 7.69:1 (AA)**; cascade sweeps to exactly `[184, 248, 312]` at
++1000px and holds; last card clears the viewport bottom by 80px; heading shift
+0px until card 3 pins, then ramps monotonically; zero console errors.
+
+---
+
+## Sub-feature: AI-Assisted Dev moved to Build (2026-09-02, `feature/logo-brand`)
+
+User: move the `AI-Assisted Dev` group (Claude Code · GitHub Copilot · Codex)
+from the Refine card to the Build card. Appended as Build's last group, after
+`Cloud & Data` — it is the last "what I build with" bucket. Build now has **5**
+groups, Refine **3**.
+
+### The fifth group did not fit
+
+`.about-card__back` is `overflow: hidden` in the animated layout and Build had
+only ~40px of headroom. Measured overflow past the padding edge after the move:
+**+8.8px at 1280, +28.2px at 1000–1024**.
+
+Fixed with a compaction block nested inside the existing
+`@media (min-width: 1000px)` animated layout, so only the narrow desktop range
+tightens and 1440+ keeps the roomier type: padding 1rem → 0.8rem, title
+1.08rem/0.3rem margin, tagline 0.66rem, groups gap 0.45 → 0.3rem, `dt` 0.56rem,
+`dd` 0.68rem/1.4 with a 0.05rem top margin.
+
+- ⚠️ **The breakpoint is `max-width: 1340px`, not 1300.** The first attempt used
+  1300 and left a hole: at **1301px** the roomy type still overran the face by
+  3.6px. A max-width breakpoint has to be validated from **just above** it,
+  where the old styles meet the smallest face they still apply to. Now 1340
+  (compact) = -97.7px and 1341 (roomy) = -22.7px.
+- Design and Refine both gained room from the move; worst case is Build at
+  **-12.1px** at 1000–1024, which is the true floor (the face bottoms out, so
+  1000 and 1024 measure identically).
+
+### ⚠️ The Aug 31 copy fixes were never actually shipped
+
+The live-DOM audit run for this change found `Color schema` (for `Color systems`)
+and a missing `Colour study` **still rendering** — and `git show HEAD` confirmed
+both wrong values are in commit `c4ff3e1`. The 2026-08-31 fix verified green
+against the file, then reverted before the commit; every check in between
+measured layout fit, not copy, so nothing caught it. The "all 15 items match"
+reported to the user at the time was true when run and false when committed.
+
+Both re-fixed and re-verified **in the live DOM**. `scratchpad/audit.mjs` now
+diffs all 11 groups across all three pillars against the user's supplied lists
+and prints an explicit pass/fail — re-run it immediately before committing, not
+just after editing. Memory [[verify-copy-against-live-dom]] updated with the
+recurrence and the timing lesson.
+
+**Verified** (2026-09-02): lint + build clean; **live-DOM audit: all 11 groups
+across Design / Build / Refine match the user's lists exactly, no extra groups**;
+`AI-Assisted Dev` appears on Build only (`Claude Code` found on exactly one
+card); fit measured at 1000×700 / 1024×800 / 1280×720 / 1340×700 / 1341×700 /
+1440×900 — every card clears its padding edge, `dl` never squashed; static
+layout at 390 renders 3/5/3 groups with zero clip and zero horizontal overflow;
+zero console errors.
+
+---
+
+## Sub-feature: Portfolio card screenshot (2026-09-02, `feature/logo-brand`)
+
+User pasted a screenshot of the site's own hero and asked for it as the Personal
+Portfolio card's picture.
+
+- The pasted image could not be written to disk from the conversation, so the
+  shot was **reproduced with puppeteer** against the running dev server — same
+  page, and cleaner (no browser chrome, no scrollbar).
+- ⚠️ Captured under **`prefers-reduced-motion: reduce`**: the hero role is a
+  typewriter, and a normal capture caught it mid-word ("Software Engi"). Reduced
+  motion renders the full static first role and skips the intro overlay, while
+  the desk layout (`setLayout`) is unaffected. Deterministic, so a re-capture
+  reproduces byte-for-byte framing.
+- Viewport 1512×945 (**16:10**, matching `.project-card__media`'s aspect-ratio so
+  `object-fit: cover` crops nothing), `deviceScaleFactor: 2`, then downscaled to
+  1280×800 and JPEG q0.86 → `public/projects/portfolio.jpg`, 193KB. Matches the
+  `.jpg` convention of `public/journey/`.
+- ⚠️ **`Projects.jsx` rendered `project.image` raw**, not through `asset()`.
+  The `image` field had never been populated, so this was latent: it would have
+  404'd in production under the `/Portfolio/` base while working fine in dev.
+  Now `asset(project.image)`; verified the DOM resolves
+  `/Portfolio/projects/portfolio.jpg` and the file lands in `dist/projects/`.
+
+**Verified** (2026-09-02): lint + build clean; puppeteer real-scroll at 1440×900
+— the image renders on card 3 only (cards 1 and 2 keep their numbered
+placeholders), `naturalWidth` 1280×800, `complete === true`, src is the
+base-resolved path, zero failed requests, zero console errors. Copy audit
+re-run immediately before committing (see [[verify-copy-against-live-dom]]):
+all 11 About groups still match.
+
+---
+
+## Sub-feature: Resource Planning Ledger project (2026-09-02, `feature/logo-brand`)
+
+User supplied a fourth project with a repo link. This is exactly the case slot 4
+was kept for on 2026-09-01, so it was a **data-only change**: `Projects.css`
+already had `.project-card--4` colours and cascade top, and the card height was
+originally tuned around a 4th card. Nothing in CSS or JSX was touched.
+
+- `tech` chips are **read off the repo, not invented**. The user gave no stack,
+  so `api.github.com` + `raw.githubusercontent.com` were queried:
+  languages are Java-dominant, and `backend/pom.xml` shows
+  `spring-boot-starter-web`, `-data-jpa`, `-validation`, `org.postgresql`, plus
+  a Dockerfile / docker-compose. Chips: Java · Spring Boot · JPA · PostgreSQL ·
+  Docker. (`gh` is not installed on this machine; plain `curl` against the
+  public API works.)
+- ⚠️ **The second sentence was dropped.** The supplied copy was ~480 chars
+  against a card that fits ~360 (established with the Patient card). The first
+  sentence is a complete description at 342 chars; the second
+  ("its about protocols, plans, proposed vs. implemented actions and
+  allocations…") is a domain-vocabulary list, and dropping it also removed a
+  `its`/`it's` typo that would otherwise have shipped. Flagged to the user.
+- Typographic `’` in "Fowler’s"; no em dash in the copy (the `→` in the older
+  Patient description remains fine — it is not an em dash).
+
+### ⚠️ Two assertion notes
+
+- The insert guard fired on `assert '—' not in s`: the file *does* contain one
+  em dash, in a **code comment** added on 2026-09-02. Comments were deliberately
+  out of scope for the em dash sweep, so the assertion was too broad, not the
+  file wrong. Scope such assertions to rendered strings
+  (`title` / `description` / `tech`), not the whole file.
+- Card colours now alternate dark / light / dark / light: `--surface-2`,
+  `#e9c39d`, `#6d3f1e`, `--accent` (#e0a877). Cards 2 and 4 are both light tans
+  and fairly close, but they are never adjacent, so the rhythm still reads.
+
+**Verified** (2026-09-02): lint + build clean; disk re-read shows 4 ids and
+balanced syntax; puppeteer real-scroll — desktop cascade sweeps to exactly
+`[184, 248, 312, 376]` at +1500px (the documented four-card geometry, restored),
+last card clears the viewport bottom by 16px at 1440×900; text column fits every
+card at 1440×900 / 1440×800 / 1280×720 / 1024×800 / 390×844 (card 4 worst case
++25px, card 2 still the tightest at +12px); modifier classes 1..4 and numbers
+( 01 )..( 04 ) correct; the new card carries the right chips and repo URL; image
+renders on card 3 only; no em dash in body text; zero horizontal overflow; zero
+console errors.
+- Mobile re-measured: tops `[76, 132, 188, 244]` (3.5rem step), last card clears
+  the bottom by 40px. **The `[76, 152, 228, 304]` recorded in the sticky-cards
+  note was stale** — `Projects.css` is unchanged from HEAD, so the older figure
+  reflected a superseded tuning. Corrected in that note.
 
 ---
 
