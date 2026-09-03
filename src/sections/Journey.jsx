@@ -132,8 +132,13 @@ export function Journey() {
           ease: 'none',
           scrollTrigger: {
             trigger: map,
-            start: 'top 70%',
-            end: 'bottom 80%',
+            // The pen tip should sit where you are actually reading. Drawing
+            // starts when the map's top crosses the viewport centre and ends
+            // when its bottom does, so the tip tracks the centre line 1:1.
+            // ('top 70%' / 'bottom 80%' ran the draw ~220px ahead of the
+            // content and finished it ~640px before the map ended.)
+            start: 'top center',
+            end: 'bottom center',
             scrub: 0.5,
           },
         })

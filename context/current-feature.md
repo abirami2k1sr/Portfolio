@@ -797,6 +797,61 @@ console errors.
 
 ---
 
+## Fix: Journey route drawn ahead of the scroll (2026-09-03, `feature/logo-brand`)
+
+User: "the scrolling of the journey map pointer is faster than the scroll."
+Correct — the drawn route ran ahead of the content and finished early.
+
+### Cause
+
+The draw's ScrollTrigger used `start: 'top 70%'`, `end: 'bottom 80%'`. Both
+fire **earlier** than the point that tracks the viewport centre, so the whole
+scrub was shifted ahead of the reader (and very slightly compressed):
+
+- ideal range (pen tip on the centre line): `mapTop - 0.5vh` → `mapTop + mapH - 0.5vh`
+- old range: `mapTop - 0.7vh` → `mapTop + mapH - 0.8vh`
+
+i.e. it started 0.2vh early and ended 0.3vh early.
+
+### Fix
+
+`start: 'top center'`, `end: 'bottom center'` — the draw spans exactly the
+scroll distance over which the map crosses the viewport centre, so the pen tip
+sits where you are actually reading. One-line change; `scrub: 0.5` kept (scrub
+lag makes the line *trail*, never lead, so it was never the culprit).
+
+### How it was measured (reusable)
+
+`scratchpad/pen.mjs`: at each real-scrolled position, read `strokeDashoffset`,
+convert to a drawn fraction, then `path.getPointAtLength(len * drawn)` and map
+that through `svg.getScreenCTM()` to get the pen tip's **actual screen y**.
+Compare against `innerHeight / 2`. This is the honest probe — progress percentage
+alone says nothing about where the tip visually is, especially with
+`preserveAspectRatio="none"` and a weaving path.
+
+| | lead vs viewport centre | draw completes |
+|---|---|---|
+| before (1440) | **-150 to -310px** (tip below centre throughout) | scrollY 8451, map bottom 9090 → **639px early** |
+| after (1440) | -31 to +38px, mean **+3** | 8751 (ideal 8640) |
+| after (1280) | -56 to +42px, mean +3 | 7502 (map bottom 7841) |
+| after (390) | -70 to +72px, mean +18 | 8489 (map bottom 8881) |
+
+- The residual ±40-70px wobble is **inherent, not a bug**: `ROUTE_D` weaves, so
+  arc length is not linear in y — during a horizontal swing the pen covers path
+  length without descending. Only the systematic offset was fixable.
+
+**Verified** (2026-09-03): lint + build clean; pen-tip sweep at 1440×900 /
+1280×720 / 390×844 with real scrolling — draw is monotonic at every width and
+completes within scrub lag of the map bottom crossing centre; reduced motion
+still yields `strokeDashoffset: 0px` / `dasharray: none` with all 5 rows at
+opacity 1 (static, fully drawn); zero console errors.
+- ⚠️ Puppeteer: the 390 sweep hit `ProtocolError: Runtime.callFunctionOn timed
+  out` purely because the mobile section is tall enough to need many samples.
+  Scale the step to the section height (`h / 14`) and raise `protocolTimeout`;
+  it was a harness limit, not a page error.
+
+---
+
 ## Previous features (implemented, unmerged)
 
 ### Hero Typing Roles + Intro Cleanup
