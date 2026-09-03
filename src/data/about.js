@@ -29,11 +29,11 @@ export const pillars = [
       },
       {
         label: 'Interfaces',
-        items: ['Layout', 'Typography', 'Color schema', 'HTML', 'CSS', 'Tailwind'],
+        items: ['Layout', 'Typography', 'Color systems', 'HTML', 'CSS', 'Tailwind'],
       },
       {
         label: 'Visual art',
-        items: ['Sketching', 'Painting', 'Digital illustration'],
+        items: ['Sketching', 'Painting', 'Colour study', 'Digital illustration'],
       },
     ],
   },
@@ -46,6 +46,7 @@ export const pillars = [
       { label: 'Frontend', items: ['React', 'Redux', 'Tailwind', 'Angular'] },
       { label: 'Backend', items: ['ASP.NET', 'Spring Boot', 'Node.js', 'Kafka'] },
       { label: 'Cloud & Data', items: ['AWS', 'Docker', 'PostgreSQL', 'MongoDB'] },
+      { label: 'AI-Assisted Dev', items: ['Claude Code', 'GitHub Copilot', 'Codex'] },
     ],
   },
   {
@@ -53,7 +54,6 @@ export const pillars = [
     title: 'Refine',
     tagline: 'Where good becomes reliable.',
     groups: [
-      { label: 'AI-Assisted Dev', items: ['Claude Code', 'GitHub Copilot', 'Codex'] },
       { label: 'Workflows', items: ['UiPath', 'Power Automate', 'Kafka pipelines'] },
       { label: 'Quality & CI', items: ['SonarQube', 'Azure DevOps', 'Jest', 'xUnit'] },
       { label: 'Monitoring', items: ['Splunk', 'New Relic', 'CloudWatch'] },

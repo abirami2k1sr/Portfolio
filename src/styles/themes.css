@@ -42,8 +42,8 @@
 
   --project-card-1-bg: var(--surface-2);
   --project-card-1-fg: var(--text);
-  --project-card-2-bg: var(--primary);
-  --project-card-2-fg: var(--on-primary);
+  --project-card-2-bg: #e9c39d;
+  --project-card-2-fg: #29241a;
   --project-card-3-bg: #6d3f1e;
   --project-card-3-fg: var(--text);
   --project-card-4-bg: var(--accent);

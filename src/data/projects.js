@@ -1,12 +1,13 @@
-// Three real projects; the last entry is still a ✏️ placeholder.
+// Three real projects.
 // (Full knowHer write-up is archived in
 // context/archive/pre-sticky-projects/projects.js.)
 //
-// ⚠️ EXACTLY FOUR ENTRIES. Projects.css hard-codes .project-card--1..4 for both
+// ⚠️ AT MOST FOUR ENTRIES. Projects.css hard-codes .project-card--1..4 for both
 // the card colours and the sticky cascade tops, so a fifth card renders with no
-// background and no sticky offset. Adding one means extending that CSS and the
-// --project-card-N theme vars, and re-tuning the card height so the last card
-// still lands fully on screen.
+// background and no sticky offset. Slot 4's styles are kept deliberately, so
+// adding a fourth project here just works; a fifth means extending that CSS and
+// the --project-card-N theme vars, and re-tuning the card height so the last
+// card still lands fully on screen.
 //
 // Every card renders a single GitHub button from `githubUrl`.
 
@@ -33,14 +34,8 @@ export const projects = [
     description:
       'This site: an earthy terracotta design system with GSAP scroll choreography: the clutter hero, split About cards, a drawn journey route, and these stacking cards.',
     tech: ['React', 'Vite', 'GSAP', 'CSS variables'],
-    githubUrl: 'https://github.com/abirami2k1',
-  },
-  {
-    id: 'project-four',
-    title: 'Project Four',
-    description:
-      '✏️ Placeholder: swap in a real project. Keep descriptions to two or three lines so the card stays balanced against the media pane.',
-    tech: ['Tech 1', 'Tech 2'],
+    // Path into public/ — rendered through asset() for the GitHub Pages base.
+    image: '/projects/portfolio.jpg',
     githubUrl: 'https://github.com/abirami2k1',
   },
 ]

@@ -226,7 +226,7 @@
     padding: clamp(1rem, 1.4vw, 1.5rem);
   }
 
-  /* Compact type so all four groups fit the fixed 5/7 card face. */
+  /* Compact type so every group fits the fixed 5/7 card face. */
   .about-card__title {
     font-size: clamp(1.2rem, 1.4vw, 1.5rem);
     margin: 0 0 0.45rem;
@@ -250,6 +250,42 @@
     margin-top: 0.1rem;
     font-size: clamp(0.7rem, 0.75vw, 0.8rem);
     line-height: 1.45;
+  }
+
+  /* Build's fifth group overruns the shortest faces (1000-1300px), where the
+     face bottoms out around 300px. Tighten the vertical rhythm here only, so
+     wider screens keep the roomier type.
+     ⚠️ The cutoff is 1340px, not 1300: at 1301px the roomy type still overran
+     the face by 3.6px. Measure just ABOVE this breakpoint when changing it. */
+  @media (max-width: 1340px) {
+    .about-card__back {
+      padding: 0.8rem;
+    }
+
+    .about-card__title {
+      font-size: 1.08rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .about-card__tagline {
+      margin: -0.2rem 0 0.35rem;
+      font-size: 0.66rem;
+      line-height: 1.35;
+    }
+
+    .about-card__groups {
+      gap: 0.3rem;
+    }
+
+    .about-card__group dt {
+      font-size: 0.56rem;
+    }
+
+    .about-card__group dd {
+      margin-top: 0.05rem;
+      font-size: 0.68rem;
+      line-height: 1.4;
+    }
   }
 
   /* One intro panel spanning all three cards — each front clips its third. */
