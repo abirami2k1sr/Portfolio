@@ -1,4 +1,4 @@
-// Three real projects.
+// Four real projects. Slot 4 is now filled.
 // (Full knowHer write-up is archived in
 // context/archive/pre-sticky-projects/projects.js.)
 //
@@ -37,5 +37,13 @@ export const projects = [
     // Path into public/ — rendered through asset() for the GitHub Pages base.
     image: '/projects/portfolio.jpg',
     githubUrl: 'https://github.com/abirami2k1',
+  },
+  {
+    id: 'resource-planning-ledger',
+    title: 'Resource Planning Ledger',
+    description:
+      'A resource planning and accounting system based on Fowler’s Analysis Patterns: an operations team plans work as a tree of proposed actions, allocates resources (assets and consumables) to them, drives each action through a lifecycle state machine, and every completion posts a balanced double-entry ledger transaction with a full audit trail.',
+    tech: ['Java', 'Spring Boot', 'JPA', 'PostgreSQL', 'Docker'],
+    githubUrl: 'https://github.com/abirami2k1/Resource-Planning-Ledger',
   },
 ]

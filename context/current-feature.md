@@ -48,7 +48,7 @@ Final design:
 - ⚠️ From the abandoned GSAP version, still worth knowing: ScrollTrigger pins wrap elements in `.pin-spacer` divs, so `:nth-of-type` card selectors silently break under pinning — use explicit modifier classes.
 - Old grid Projects archived to `context/archive/pre-sticky-projects/`.
 
-**Verified** (2026-07-16): cascade tops exactly [84, 148, 212, 276] desktop / [76, 152, 228, 304] mobile through the dwell; covered headers hit-test to themselves, bodies to the covering card; GitHub button hittable on the top card; natural release; no 390px overflow; reduced motion static; both themes; zero console errors. Mobile: header band fits title + one chip row (~4 chips; extras wrap under the next card).
+**Verified** (2026-07-16): cascade tops exactly [84, 148, 212, 276] desktop / [76, 132, 188, 244] mobile through the dwell (⚠️ the mobile figures were later re-measured on 2026-09-02: the step is 3.5rem = 56px, not 4.75rem; this line originally recorded 76px steps); covered headers hit-test to themselves, bodies to the covering card; GitHub button hittable on the top card; natural release; no 390px overflow; reduced motion static; both themes; zero console errors. Mobile: header band fits title + one chip row (~4 chips; extras wrap under the next card).
 
 ---
 
@@ -744,6 +744,56 @@ placeholders), `naturalWidth` 1280×800, `complete === true`, src is the
 base-resolved path, zero failed requests, zero console errors. Copy audit
 re-run immediately before committing (see [[verify-copy-against-live-dom]]):
 all 11 About groups still match.
+
+---
+
+## Sub-feature: Resource Planning Ledger project (2026-09-02, `feature/logo-brand`)
+
+User supplied a fourth project with a repo link. This is exactly the case slot 4
+was kept for on 2026-09-01, so it was a **data-only change**: `Projects.css`
+already had `.project-card--4` colours and cascade top, and the card height was
+originally tuned around a 4th card. Nothing in CSS or JSX was touched.
+
+- `tech` chips are **read off the repo, not invented**. The user gave no stack,
+  so `api.github.com` + `raw.githubusercontent.com` were queried:
+  languages are Java-dominant, and `backend/pom.xml` shows
+  `spring-boot-starter-web`, `-data-jpa`, `-validation`, `org.postgresql`, plus
+  a Dockerfile / docker-compose. Chips: Java · Spring Boot · JPA · PostgreSQL ·
+  Docker. (`gh` is not installed on this machine; plain `curl` against the
+  public API works.)
+- ⚠️ **The second sentence was dropped.** The supplied copy was ~480 chars
+  against a card that fits ~360 (established with the Patient card). The first
+  sentence is a complete description at 342 chars; the second
+  ("its about protocols, plans, proposed vs. implemented actions and
+  allocations…") is a domain-vocabulary list, and dropping it also removed a
+  `its`/`it's` typo that would otherwise have shipped. Flagged to the user.
+- Typographic `’` in "Fowler’s"; no em dash in the copy (the `→` in the older
+  Patient description remains fine — it is not an em dash).
+
+### ⚠️ Two assertion notes
+
+- The insert guard fired on `assert '—' not in s`: the file *does* contain one
+  em dash, in a **code comment** added on 2026-09-02. Comments were deliberately
+  out of scope for the em dash sweep, so the assertion was too broad, not the
+  file wrong. Scope such assertions to rendered strings
+  (`title` / `description` / `tech`), not the whole file.
+- Card colours now alternate dark / light / dark / light: `--surface-2`,
+  `#e9c39d`, `#6d3f1e`, `--accent` (#e0a877). Cards 2 and 4 are both light tans
+  and fairly close, but they are never adjacent, so the rhythm still reads.
+
+**Verified** (2026-09-02): lint + build clean; disk re-read shows 4 ids and
+balanced syntax; puppeteer real-scroll — desktop cascade sweeps to exactly
+`[184, 248, 312, 376]` at +1500px (the documented four-card geometry, restored),
+last card clears the viewport bottom by 16px at 1440×900; text column fits every
+card at 1440×900 / 1440×800 / 1280×720 / 1024×800 / 390×844 (card 4 worst case
++25px, card 2 still the tightest at +12px); modifier classes 1..4 and numbers
+( 01 )..( 04 ) correct; the new card carries the right chips and repo URL; image
+renders on card 3 only; no em dash in body text; zero horizontal overflow; zero
+console errors.
+- Mobile re-measured: tops `[76, 132, 188, 244]` (3.5rem step), last card clears
+  the bottom by 40px. **The `[76, 152, 228, 304]` recorded in the sticky-cards
+  note was stale** — `Projects.css` is unchanged from HEAD, so the older figure
+  reflected a superseded tuning. Corrected in that note.
 
 ---
 
